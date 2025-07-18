@@ -6,10 +6,6 @@ public class BigInteger {
     private ArrayList<Integer> bits = new ArrayList<>();
     private int sign = 0; // -1 for negative, 0 for 0, 1 for positive
 
-    BigInteger(String value) {
-
-    }
-
     BigInteger(int value) {
         if (value > 0) {
             sign = 1;
@@ -85,10 +81,13 @@ public class BigInteger {
             int newvalue = 0;
             for (int j = 0; j < 32; j++) {
                 int mask = 1 << j;
-                int sum = (((valueThis & mask) + (valueOther & mask)) >> j) + carryOver;
+                int shifted1 = ((valueThis & mask) >>> j);
+                int shifted2 = ((valueOther & mask) >>> j);
+
+                int sum = (shifted1 + shifted2) + carryOver;
                 int bitSumValue = sum & 1;
                 carryOver = sum > 1 ? 1 : 0;
-                newvalue += bitSumValue << j;
+                newvalue |= bitSumValue << j;
             }
             newBits.add(newvalue);
         }
@@ -162,14 +161,6 @@ public class BigInteger {
         return new BigInteger(newBits, newSign);
     }
 
-    public BigInteger divide(BigInteger val) {
-        throw new UnsupportedOperationException();
-    }
-
-    public BigInteger multiply(BigInteger val) {
-        throw new UnsupportedOperationException();
-    }
-
     public boolean LargerThan(BigInteger other) {
         if (sign != other.sign) {
             return sign > other.sign;
@@ -197,11 +188,6 @@ public class BigInteger {
         }
 
         return false;
-    }
-
-    @Override
-    public String toString() {
-        throw new UnsupportedOperationException();
     }
 
     @Override
